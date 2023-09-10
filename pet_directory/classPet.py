@@ -32,13 +32,3 @@ class Create_pet():
         get_url = 'https://petstore.swagger.io/v2/pet/' + str(self.value_id)
         get_pet_response = requests.get(get_url)
         return get_pet_response
-
-
-
-
-    # @validator("name")
-    # @classmethod
-    # def validate_name(cls, value):
-    #     if value > 16:
-    #         raise ValueError("Pet name must be less than 16 symbols")
-    #     return value
