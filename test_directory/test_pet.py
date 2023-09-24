@@ -11,15 +11,19 @@ class Test_create_pet:
     response = new_pet.get_response()
 
     def test_check_status_code(self):
+        """Test status code is 200"""
         assert self.response.status_code == 200
 
     def test_check_header(self):
+        """Test content-type header is json"""
         assert self.response.headers['Content-Type'] == "application/json"
 
     def test_check_response_positive(self):
+        """Test name is Ralf"""
         assert self.response.json().get('name') == "Ralf"
 
     def test_check_response_negative(self):
+        """Test status is Sold"""
         assert self.response.json().get('status') != "Sold"
 
 @pytest.mark.update
@@ -31,15 +35,19 @@ class Test_update_pet:
     response = requests.put(url, json=body)
 
     def test_check_status_code(self):
+        """Test status code is 200"""
         assert self.response.status_code == 200
 
     def test_check_header(self):
+        """Test content-type header is json"""
         assert self.response.headers['Content-Type'] == "application/json"
 
     def test_check_response_positive(self):
+        """Test name is Rick"""
         assert self.response.json().get('name') == "Rick"
 
     def test_check_response_negative(self):
+        """Test status is not Available"""
         assert self.response.json().get('status') != "Available"
 
 
@@ -50,10 +58,11 @@ class Test_get_pet_byStatus:
     response = requests.get(url)
 
     def test_check_status_code(self):
+        """Test status code is 200"""
         assert self.response.status_code == 200
 
     def test_available_in_response(self):
-        """Тест, проверяющий, что все статусы в ответе имеют значение available"""
+        """Test all statuses in response have value 'available'"""
         self.list_status = [i.get('status') == 'available' for i in self.response.json()]
         assert all(self.list_status)
 
@@ -72,9 +81,11 @@ class Test_get_pet_byId:
         assert id == self.value_id
 
     def test_check_status_code_200(self):
+        """Test status code is 200"""
         assert self.response.status_code == 200
 
     def test_check_pet_not_found(self):
+        """Negative test - pet not found"""
         not_existed_id = 0
         get_url = 'https://petstore.swagger.io/v2/pet/' + str(not_existed_id)
         self.get_id_response = requests.get(get_url)
@@ -82,29 +93,31 @@ class Test_get_pet_byId:
         assert self.get_id_response.status_code == 404
         assert self.dict_get_response.get("message") == 'Pet not found'
 
-# @pytest.mark.update
-# class Test_update_pet_byId:
-#
-#     new_pet = Create_pet()  # Создание питомца методом
-#     id = new_pet.get_value_id()  # Получение id у созданного питомца
-#     url = "https://petstore.swagger.io/v2/pet/" + str(id)
-#     response = requests.post(url, data='name=New_name&status=sold')
-#
-#     def test_check_status_code_200(self):
-#         print(self.new_pet.get_response())
-#         assert self.response.status_code == 200
-#         print(self.response.content)
-#
-#     def test_check_updated_pet_name(self):
-#         url = 'https://petstore.swagger.io/v2/pet/' + str(self.id)
-#         petId_response = requests.get(url)
-#         dict_response = json.loads(petId_response.content)
-#         print(dict_response)
-#
-#     def test_check_updated_status(self):
-#         get_url = 'https://petstore.swagger.io/v2/pet/' + str(self.id)
-#         get_pet_response = json.loads(requests.get(get_url).content)
-#         assert get_pet_response.get("status") == "sold"
+@pytest.mark.update
+class Test_update_pet_byId:
+
+    new_pet1 = Create_pet()
+    value_id = new_pet1.get_value_id()
+    data = {"name": 'New_name', "status": 'sold'}
+    url = "https://petstore.swagger.io/v2/pet/" + str(value_id)
+    response = requests.post(url, data=data)
+
+    def test_check_status_code_200(self):
+        """Test status code is 200"""
+        print(self.new_pet1.get_response())
+        assert self.response.status_code == 200
+
+    def test_check_updated_pet_name(self):
+        """Test update name"""
+        url = 'https://petstore.swagger.io/v2/pet/' + str(self.value_id)
+        petId_response = requests.get(url)
+        assert petId_response.json().get('name') == "New_name"
+
+    def test_check_updated_status(self):
+        """Test update status is sold"""
+        get_url = 'https://petstore.swagger.io/v2/pet/' + str(self.value_id)
+        get_pet_response = json.loads(requests.get(get_url).content)
+        assert get_pet_response.get("status") == "sold"
 
 
 class Test_delete_pet:
@@ -115,11 +128,9 @@ class Test_delete_pet:
     response = requests.delete(url)
 
     def test_check_status_code_200(self):
+        """Test status code is 200"""
         assert self.response.status_code == 200
 
     def test_check_pet_not_found(self):
+        """Test pet not found"""
         assert self.new_pet.get_pet_byId().status_code == 404
-
-
-# class Test_check_validation:
-    # pass
