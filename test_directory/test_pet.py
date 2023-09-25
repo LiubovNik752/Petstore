@@ -122,8 +122,8 @@ class Test_update_pet_byId:
 
 class Test_delete_pet:
 
-    new_pet = Create_pet()  # Создание питомца методом
-    value_id = new_pet.get_value_id()  # Получение id у созданного питомца
+    new_pet = Create_pet()
+    value_id = new_pet.get_value_id()
     url = 'https://petstore.swagger.io/v2/pet/' + str(value_id)
     response = requests.delete(url)
 
